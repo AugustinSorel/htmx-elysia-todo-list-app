@@ -13,7 +13,7 @@ export const Layout = ({
           (script) => scriptTags[script as keyof typeof scriptTags],
         )}
       </head>
-      <body class="bg-background text-foreground">
+      <body class="bg-red-500 text-foreground">
         <header class="sticky top-0 flex items-center justify-between border-b border-current bg-accent px-max-width py-4 text-background">
           <h1 class="text-xl font-semibold capitalize">
             <a href="/">todo list</a>
