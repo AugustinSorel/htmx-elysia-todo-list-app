@@ -14,7 +14,6 @@
   "devDependencies": {
     "bun-types": "latest",
     "concurrently": "^8.2.2",
-    "drizzle-kit": "^0.22.1",
     "prettier": "^3.3.0",
     "prettier-plugin-tailwindcss": "^0.6.1",
     "tailwindcss": "^3.4.3"
@@ -29,6 +28,7 @@
     "@sinclair/typebox": "^0.32.31",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "drizzle-kit": "^0.22.6",
     "drizzle-orm": "^0.31.0",
     "elysia": "^1.0.22",
     "i": "^0.3.7",

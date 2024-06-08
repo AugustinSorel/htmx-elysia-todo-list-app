@@ -11,6 +11,8 @@ COPY src src
 COPY tsconfig.json .
 COPY public public
 
+RUN bun db:push
+
 ENV NODE_ENV production
 CMD ["bun", "src/index.ts"]
 
