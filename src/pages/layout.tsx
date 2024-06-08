@@ -7,7 +7,7 @@ export const Layout = ({
   return (
     <html lang="en">
       <head>
-        <title>Hello World</title>
+        <title>HTMX🤝Elysia</title>
         <link rel="stylesheet" href="/public/styles.css" />
         {Object.keys(scripts).map(
           (script) => scriptTags[script as keyof typeof scriptTags],
