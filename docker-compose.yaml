@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  app:
+    depends_on:
+      - database
+    image: "oven/bun"
+    entrypoint: []
+    command: "/bin/sh -c 'bun install && bun dev'"
+    ports: ["3000:3000"]
+    volumes: ["./:/home/bun/app"]
+
+  database:
+    image: postgres:latest
+    container_name: htmx_todo_list_db
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=htmx_todo_list_db
