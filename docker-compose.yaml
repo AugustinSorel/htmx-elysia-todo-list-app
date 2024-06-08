@@ -2,11 +2,9 @@ version: '3.9'
 
 services:
   app:
-    depends_on:
-      - database
     image: "oven/bun"
     entrypoint: []
-    command: "/bin/sh -c 'bun install && bun dev'"
+    command: "/bin/sh -c 'bun install && bun run dev'"
     ports: ["3000:3000"]
     volumes: ["./:/home/bun/app"]
 
