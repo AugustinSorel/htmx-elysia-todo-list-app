@@ -8,6 +8,8 @@
     "styles:dev": "bun run styles:build --watch",
     "db:run": "docker compose up",
     "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
     "db:bash": "docker exec -it htmx_todo_list_db bash",
     "dev": "concurrently bun:*:dev"
   },
@@ -15,8 +17,7 @@
     "bun-types": "latest",
     "concurrently": "^8.2.2",
     "prettier": "^3.3.0",
-    "prettier-plugin-tailwindcss": "^0.6.1",
-    "tailwindcss": "^3.4.3"
+    "prettier-plugin-tailwindcss": "^0.6.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -36,6 +37,7 @@
     "lucide-react": "^0.383.0",
     "postgres": "^3.4.4",
     "tailwind-merge": "^2.3.0",
+    "tailwindcss": "^3.4.4",
     "zod": "^3.23.8"
   }
 }
