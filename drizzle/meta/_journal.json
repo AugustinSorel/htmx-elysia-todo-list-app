@@ -15,6 +15,13 @@
       "when": 1717865680445,
       "tag": "0001_heavy_genesis",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1717874826456,
+      "tag": "0002_slim_hellfire_club",
+      "breakpoints": true
     }
   ]
 }
