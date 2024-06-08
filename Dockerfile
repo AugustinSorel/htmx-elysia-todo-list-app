@@ -6,12 +6,11 @@ COPY package.json .
 COPY bun.lockb .
 
 RUN bun install --production
+RUN bun styles:build
 
 COPY src src
 COPY tsconfig.json .
-COPY public public
-
-RUN bun db:push
+# COPY public public
 
 ENV NODE_ENV production
 CMD ["bun", "src/index.ts"]
