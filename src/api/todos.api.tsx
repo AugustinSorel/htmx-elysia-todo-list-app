@@ -12,7 +12,11 @@ export const todoApi = new Elysia({
   .use(ctx)
   .get(
     "/",
-    async ({ query, db }) => {
+    async ({ query, db, user, set }) => {
+      // if (!user) {
+      //   set.headers["HX-Redirect"] = "/sign-up";
+      // }
+
       const todosPerPage = 50;
 
       const allTodos = await db

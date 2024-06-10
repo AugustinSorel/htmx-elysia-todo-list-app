@@ -51,4 +51,10 @@ const icons = {
   ),
   edit: <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />,
   loader: <path d="M21 12a9 9 0 1 1-6.219-8.56" />,
+  plus: (
+    <>
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </>
+  ),
 } as const;

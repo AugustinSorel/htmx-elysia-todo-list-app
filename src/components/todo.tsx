@@ -90,7 +90,15 @@ const EditBtn = ({
 
 const List = (props: JSX.HtmlOListTag) => {
   return (
-    <ol class="divide-y divide-border" {...props}>
+    <ol
+      hx-get="/api/todos"
+      hx-swap="afterbegin"
+      hx-trigger="load"
+      hx-indicator=".todo-item-skeleton"
+      hx-disinherit="hx-indicator"
+      class="divide-y divide-border"
+      {...props}
+    >
       {props.children}
     </ol>
   );
@@ -152,7 +160,7 @@ const FormSubmitButton = (props: ButtonProps) => {
       size="icon"
       {...props}
     >
-      <span class="group-[.htmx-request]:hidden">+</span>
+      <Icon icon="plus" size="sm" class="group-[.htmx-request]:hidden" />
       <Loader class="m-auto" />
     </Button>
   );

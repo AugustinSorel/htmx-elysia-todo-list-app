@@ -27,8 +27,8 @@ export type Todo = typeof todoTable.$inferSelect;
 
 export const userTable = pgTable("user", {
   id: varchar("id", { length: 255 }).primaryKey(),
-  email: varchar("email", { length: 255 }).unique(),
-  passwordHash: varchar("password", { length: 255 }),
+  email: varchar("email", { length: 255 }).unique().notNull(),
+  passwordHash: varchar("password", { length: 255 }).notNull(),
 });
 
 export const sessionTable = pgTable("session", {
