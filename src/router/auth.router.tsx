@@ -19,12 +19,10 @@ import { SignInForm, SignUpForm } from "../components/auth";
 
 export const authRouter = new Elysia()
   .use(ctx)
-  .get("/sign-up", ({ redirect, set, user }) => {
+  .get("/sign-up", ({ redirect, user }) => {
     if (user) {
       return redirect("/", 302);
     }
-
-    set.headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
 
     return (
       <Layout.Html>
@@ -38,24 +36,19 @@ export const authRouter = new Elysia()
         <Layout.Body>
           <Header />
 
-          <main
-            class="mx-auto flex max-w-lg flex-col p-4"
-            hx-ext="response-targets"
-          >
-            <h2 class="mt-20 text-center text-3xl font-semibold">sign up</h2>
+          <Main>
+            <SubTitle>sign up</SubTitle>
 
             <SignUpForm />
-          </main>
+          </Main>
         </Layout.Body>
       </Layout.Html>
     );
   })
-  .get("/sign-in", ({ user, redirect, set }) => {
+  .get("/sign-in", ({ user, redirect }) => {
     if (user) {
       return redirect("/", 302);
     }
-
-    set.headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
 
     return (
       <Layout.Html>
@@ -69,14 +62,11 @@ export const authRouter = new Elysia()
         <Layout.Body>
           <Header />
 
-          <main
-            class="mx-auto flex max-w-lg flex-col p-4"
-            hx-ext="response-targets"
-          >
-            <h2 class="mt-20 text-center text-3xl font-semibold">sign in</h2>
+          <Main>
+            <SubTitle>sign in</SubTitle>
 
             <SignInForm />
-          </main>
+          </Main>
         </Layout.Body>
       </Layout.Html>
     );
@@ -241,4 +231,24 @@ export const authRouter = new Elysia()
 
 const isPgError = (error: Error): error is PostgresError => {
   return error.constructor.name === "PostgresError";
+};
+
+const Main = (props: JSX.HtmlTag) => {
+  return (
+    <main
+      class="mx-auto flex max-w-lg flex-col p-4"
+      hx-ext="response-targets"
+      {...props}
+    >
+      {props.children}
+    </main>
+  );
+};
+
+const SubTitle = (props: JSX.HtmlTag) => {
+  return (
+    <h2 class="mt-20 text-center text-3xl font-semibold" {...props}>
+      {props.children}
+    </h2>
+  );
 };
