@@ -1,21 +1,86 @@
-import { Elysia, t } from "elysia";
-import { AuthForm } from "../components/auth";
-import { ZodError } from "zod";
-import { generateIdFromEntropySize } from "lucia";
+import Elysia, { t } from "elysia";
 import { ctx } from "../context/context";
-import { userTable } from "../db/schema";
+import { Layout } from "../components/layout";
+import { Head } from "../components/head";
+import { Header } from "../components/header";
 import { lucia } from "../lib/auth";
-import { PostgresError } from "postgres";
 import {
   SignInSchema,
   SignUpSchema,
   signInSchema,
   signUpSchema,
 } from "../schemas/auth.schemas";
+import { ZodError } from "zod";
+import { userTable } from "../db/schema";
 import { eq } from "drizzle-orm";
+import { generateIdFromEntropySize } from "lucia";
+import { PostgresError } from "postgres";
+import { SignInForm, SignUpForm } from "../components/auth";
 
-export const authApi = new Elysia({ prefix: "/auth" })
+export const authRouter = new Elysia()
   .use(ctx)
+  .get("/sign-up", ({ redirect, set, user }) => {
+    if (user) {
+      return redirect("/", 302);
+    }
+
+    set.headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+
+    return (
+      <Layout.Html>
+        <Head.Item>
+          <Head.Title>Sign up</Head.Title>
+          <Head.Style />
+          <Head.Htmx />
+          <Head.HtmxResponseTarget />
+        </Head.Item>
+
+        <Layout.Body>
+          <Header />
+
+          <main
+            class="mx-auto flex max-w-lg flex-col p-4"
+            hx-ext="response-targets"
+          >
+            <h2 class="mt-20 text-center text-3xl font-semibold">sign up</h2>
+
+            <SignUpForm />
+          </main>
+        </Layout.Body>
+      </Layout.Html>
+    );
+  })
+  .get("/sign-in", ({ user, redirect, set }) => {
+    if (user) {
+      return redirect("/", 302);
+    }
+
+    set.headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+
+    return (
+      <Layout.Html>
+        <Head.Item>
+          <Head.Title>Sign in</Head.Title>
+          <Head.Style />
+          <Head.Htmx />
+          <Head.HtmxResponseTarget />
+        </Head.Item>
+
+        <Layout.Body>
+          <Header />
+
+          <main
+            class="mx-auto flex max-w-lg flex-col p-4"
+            hx-ext="response-targets"
+          >
+            <h2 class="mt-20 text-center text-3xl font-semibold">sign in</h2>
+
+            <SignInForm />
+          </main>
+        </Layout.Body>
+      </Layout.Html>
+    );
+  })
   .post(
     "/sign-up",
     async ({ body, db, cookie, set }) => {
@@ -59,20 +124,7 @@ export const authApi = new Elysia({ prefix: "/auth" })
           set.headers["Content-Type"] = "text/html";
 
           return (
-            <AuthForm.SignUpForm>
-              <AuthForm.EmailLabel />
-              <AuthForm.EmailInput value={body.email} />
-              <AuthForm.ErrorMsg>this email is already used</AuthForm.ErrorMsg>
-
-              <AuthForm.PasswordLabel />
-              <AuthForm.PasswordInput value={body.password} />
-
-              <AuthForm.ConfirmPasswordLabel />
-              <AuthForm.ConfirmPasswordInput value={body.confirmPassword} />
-
-              <AuthForm.SubmitButton>sign up</AuthForm.SubmitButton>
-              <AuthForm.SigInRedirect />
-            </AuthForm.SignUpForm>
+            <SignUpForm errors={{ email: "this email is already used" }} />
           );
         }
 
@@ -83,34 +135,14 @@ export const authApi = new Elysia({ prefix: "/auth" })
           set.headers["Content-Type"] = "text/html";
 
           return (
-            <AuthForm.SignUpForm>
-              <AuthForm.EmailLabel />
-              <AuthForm.EmailInput value={body.email} />
-              {errors.email?._errors.at(0) && (
-                <AuthForm.ErrorMsg>
-                  {errors.email._errors.at(0)}
-                </AuthForm.ErrorMsg>
-              )}
-
-              <AuthForm.PasswordLabel />
-              <AuthForm.PasswordInput value={body.password} />
-              {errors.password?._errors.at(0) && (
-                <AuthForm.ErrorMsg>
-                  {errors.password._errors.at(0)}
-                </AuthForm.ErrorMsg>
-              )}
-
-              <AuthForm.ConfirmPasswordLabel />
-              <AuthForm.ConfirmPasswordInput value={body.confirmPassword} />
-              {errors.confirmPassword?._errors.at(0) && (
-                <AuthForm.ErrorMsg>
-                  {errors.confirmPassword._errors.at(0)}
-                </AuthForm.ErrorMsg>
-              )}
-
-              <AuthForm.SubmitButton>sign up</AuthForm.SubmitButton>
-              <AuthForm.SigInRedirect />
-            </AuthForm.SignUpForm>
+            <SignUpForm
+              values={body}
+              errors={{
+                email: errors.email?._errors.at(0),
+                password: errors.password?._errors.at(0),
+                confirmPassword: errors.confirmPassword?._errors.at(0),
+              }}
+            />
           );
         }
       },
@@ -163,19 +195,10 @@ export const authApi = new Elysia({ prefix: "/auth" })
           set.headers["Content-Type"] = "text/html";
 
           return (
-            <AuthForm.SignInForm>
-              <AuthForm.EmailLabel />
-              <AuthForm.EmailInput value={body.email} />
-
-              <AuthForm.PasswordLabel />
-              <AuthForm.PasswordInput value={body.password} />
-              <AuthForm.ErrorMsg>
-                incorrect username or password
-              </AuthForm.ErrorMsg>
-
-              <AuthForm.SubmitButton>sign in</AuthForm.SubmitButton>
-              <AuthForm.SignUpRedirect />
-            </AuthForm.SignInForm>
+            <SignInForm
+              values={body}
+              errors={{ password: "incorrect username or password" }}
+            />
           );
         }
 
@@ -186,26 +209,13 @@ export const authApi = new Elysia({ prefix: "/auth" })
           set.headers["Content-Type"] = "text/html";
 
           return (
-            <AuthForm.SignInForm>
-              <AuthForm.EmailLabel />
-              <AuthForm.EmailInput value={body.email} />
-              {errors.email?._errors.at(0) && (
-                <AuthForm.ErrorMsg>
-                  {errors.email._errors.at(0)}
-                </AuthForm.ErrorMsg>
-              )}
-
-              <AuthForm.PasswordLabel />
-              <AuthForm.PasswordInput value={body.password} />
-              {errors.password?._errors.at(0) && (
-                <AuthForm.ErrorMsg>
-                  {errors.password._errors.at(0)}
-                </AuthForm.ErrorMsg>
-              )}
-
-              <AuthForm.SubmitButton>sign in</AuthForm.SubmitButton>
-              <AuthForm.SignUpRedirect />
-            </AuthForm.SignInForm>
+            <SignInForm
+              values={body}
+              errors={{
+                email: errors.email?._errors.at(0),
+                password: errors.password?._errors.at(0),
+              }}
+            />
           );
         }
       },
@@ -213,7 +223,9 @@ export const authApi = new Elysia({ prefix: "/auth" })
   )
   .post("/sign-out", async ({ session, cookie, set }) => {
     if (!session) {
-      throw new Error("");
+      set.status = "Unauthorized";
+
+      throw new Error("Unauthorized");
     }
 
     await lucia.invalidateSession(session.id);
