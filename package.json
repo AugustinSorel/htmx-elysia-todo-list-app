@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "server:dev": "bun --watch ./src/index.ts",
+    "server:bash": "docker exec -it htmx-cc-app-1 bash",
     "styles:build": "tailwindcss -i ./src/styles/styles.css -o ./public/styles.css",
     "styles:dev": "bun run styles:build --watch",
     "db:run": "docker compose up",

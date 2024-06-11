@@ -141,7 +141,7 @@ export const todosRouter = new Elysia({ prefix: "/todos" })
     async ({ params, db }) => {
       await db
         .update(todoTable)
-        .set({ done: not(todoTable.done) })
+        .set({ done: not(todoTable.done), updatedAt: new Date() })
         .where(eq(todoTable.id, params.id));
     },
     {
