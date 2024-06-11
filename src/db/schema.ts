@@ -6,8 +6,11 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
-export const todoTable = pgTable("todos", {
+export const todoTable = pgTable("todo", {
   id: serial("id").primaryKey(),
+  userId: varchar("user_id", { length: 255 })
+    .references(() => userTable.id)
+    .notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   done: boolean("done").notNull(),
   createdAt: timestamp("created_at", {

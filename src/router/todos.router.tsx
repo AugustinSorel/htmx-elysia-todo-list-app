@@ -30,6 +30,7 @@ export const todosRouter = new Elysia({ prefix: "/todos" })
       const todos = await db
         .select()
         .from(todoTable)
+        .where(eq(todoTable.userId, user.id))
         .orderBy(desc(todoTable.createdAt))
         //TODO: peek + 1 item to save up 1 api call
         .limit(todosPerPage)
@@ -89,8 +90,15 @@ export const todosRouter = new Elysia({ prefix: "/todos" })
   )
   .post(
     "/",
-    async ({ body, set, db }) => {
-      const todos = await db.select().from(todoTable);
+    async ({ body, set, db, user }) => {
+      if (!user) {
+        throw new Error("Not autherized");
+      }
+
+      const todos = await db
+        .select()
+        .from(todoTable)
+        .where(eq(todoTable.userId, user.id));
 
       if (!todos.length) {
         set.headers["HX-Reswap"] = "innerHTML";
@@ -98,15 +106,13 @@ export const todosRouter = new Elysia({ prefix: "/todos" })
 
       const [newTodo] = await db
         .insert(todoTable)
-        .values({
-          title: body.title,
-          done: false,
-        })
+        .values({ title: body.title, done: false, userId: user.id })
         .returning();
 
       return (
         <>
           <TodoItem todo={newTodo} />
+
           <NewTodoForm hx-swap-oob="outerHTML:form" />
         </>
       );
@@ -152,11 +158,18 @@ export const todosRouter = new Elysia({ prefix: "/todos" })
   )
   .delete(
     "/:id",
-    async ({ params, db }) => {
+    async ({ params, db, user }) => {
+      if (!user) {
+        throw new Error("not authorized");
+      }
+
       const todos = await db.transaction(async (tx) => {
         await tx.delete(todoTable).where(eq(todoTable.id, params.id));
 
-        return await tx.select().from(todoTable);
+        return await tx
+          .select()
+          .from(todoTable)
+          .where(eq(todoTable.userId, user.id));
       });
 
       if (!todos.length) {
