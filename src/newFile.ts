@@ -5,4 +5,4 @@ import { router } from "./router";
 new Elysia()
   .use(staticPlugin({ noCache: Bun.env.NODE_ENV === "dev" }))
   .use(router)
-  .listen(3_000);
+  .listen(3000);

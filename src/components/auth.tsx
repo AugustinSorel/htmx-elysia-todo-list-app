@@ -3,33 +3,69 @@ import { Loader } from "./ui/loader";
 import { Input, InputProps } from "./ui/input";
 import { Label } from "./ui/label";
 import { Link } from "./ui/link";
+import { SignInSchema, SignUpSchema } from "../schemas/auth.schemas";
 
-const SignUpForm = (props: JSX.HtmlFormTag) => {
+type SignUpFormProps = Partial<{
+  values: Partial<SignUpSchema>;
+  errors: Partial<SignUpSchema>;
+}>;
+
+export const SignUpForm = ({ values, errors }: SignUpFormProps) => {
   return (
     <form
       class="group flex flex-col [&>button]:mt-10 [&>label]:mb-1 [&>label]:mt-4"
-      hx-post="/api/auth/sign-up"
+      hx-post="/sign-up"
       hx-disabled-elt="button"
       hx-swap="outerHTML"
       {...{ "hx-target-4*": "this" }}
-      {...props}
     >
-      {props.children}
+      <EmailLabel />
+      <EmailInput value={values?.email} />
+      {errors?.email && <ErrorMsg>{errors.email}</ErrorMsg>}
+
+      <PasswordLabel />
+      <PasswordInput value={values?.password} />
+      {errors?.password && <ErrorMsg>{errors.password}</ErrorMsg>}
+
+      <ConfirmPasswordLabel />
+      <ConfirmPasswordInput value={values?.confirmPassword} />
+      {errors?.confirmPassword && <ErrorMsg>{errors.confirmPassword}</ErrorMsg>}
+
+      <SubmitButton>sign up</SubmitButton>
+      <RedirectMsg>
+        already a member ? <Link href="/sign-in">sign in</Link>{" "}
+      </RedirectMsg>
     </form>
   );
 };
 
-const SignInForm = (props: JSX.HtmlFormTag) => {
+type SignInFormProps = Partial<{
+  values: Partial<SignInSchema>;
+  errors: Partial<SignInSchema>;
+}>;
+
+export const SignInForm = ({ values, errors }: SignInFormProps) => {
   return (
     <form
       class="group flex flex-col [&>button]:mt-10 [&>label]:mb-1 [&>label]:mt-4"
-      hx-post="/api/auth/sign-in"
+      hx-post="/sign-in"
       hx-disabled-elt="button"
       hx-swap="outerHTML"
       {...{ "hx-target-4*": "this" }}
-      {...props}
     >
-      {props.children}
+      <EmailLabel />
+      <EmailInput value={values?.email} />
+      {errors?.email && <ErrorMsg>{errors.email}</ErrorMsg>}
+
+      <PasswordLabel />
+      <PasswordInput value={values?.password} />
+      {errors?.password && <ErrorMsg>{errors.password}</ErrorMsg>}
+
+      <SubmitButton>sign up</SubmitButton>
+
+      <RedirectMsg>
+        don't have an account ? <Link href="/sign-up">sign up</Link>
+      </RedirectMsg>
     </form>
   );
 };
@@ -102,55 +138,10 @@ const SubmitButton = ({ children, ...props }: JSX.HtmlButtonTag) => {
   );
 };
 
-const SigInRedirect = () => {
+const RedirectMsg = (props: JSX.HtmlTag) => {
   return (
-    <p class="mt-2 text-center text-sm text-muted-foreground">
-      already a member ? <Link href="/sign-in">sign in</Link>
+    <p class="mt-2 text-center text-sm text-muted-foreground" {...props}>
+      {props.children}
     </p>
   );
-};
-
-const SignUpRedirect = () => {
-  return (
-    <p class="mt-2 text-center text-sm text-muted-foreground">
-      don't have an account ? <Link href="/sign-up">sign up</Link>
-    </p>
-  );
-};
-
-const Title = (props: JSX.HtmlTag) => {
-  return (
-    <h2 class="mt-20 text-center text-3xl font-semibold" {...props}>
-      {props.children}
-    </h2>
-  );
-};
-
-const Container = (props: JSX.HtmlTag) => {
-  return (
-    <main
-      class="mx-auto flex max-w-lg flex-col"
-      hx-ext="response-targets"
-      {...props}
-    >
-      {props.children}
-    </main>
-  );
-};
-
-export const AuthForm = {
-  SignInForm,
-  SignUpForm,
-  EmailLabel,
-  PasswordLabel,
-  ConfirmPasswordLabel,
-  EmailInput,
-  PasswordInput,
-  ConfirmPasswordInput,
-  ErrorMsg,
-  SubmitButton,
-  SigInRedirect,
-  SignUpRedirect,
-  Title,
-  Container,
 };
