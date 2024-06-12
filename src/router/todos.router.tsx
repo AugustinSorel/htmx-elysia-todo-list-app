@@ -1,8 +1,6 @@
 import Elysia, { t } from "elysia";
 import { ctx } from "../context/context";
 import { Layout } from "../components/layout";
-import { Head } from "../components/head";
-import { Header } from "../components/header";
 import {
   NewTodoForm,
   TodoItem,
@@ -47,39 +45,28 @@ export const todosRouter = new Elysia({ prefix: "/todos" })
       }
 
       return (
-        <Layout.Html>
-          <Head.Item>
-            <Head.Title>HTMX🤝Elysia</Head.Title>
-            <Head.Style />
-            <Head.Htmx />
-            <Head.HtmxResponseTarget />
-          </Head.Item>
+        <Layout title="HTMX🤝Elysia" user={user}>
+          <main
+            class="mt-10 flex flex-col space-y-10 px-max-width"
+            hx-ext="response-targets"
+          >
+            <NewTodoForm />
 
-          <Layout.Body>
-            <Header user={user} />
+            <TodoList>
+              {!todos.length && <TodoListEmptyMsg />}
 
-            <main
-              class="mt-10 flex flex-col space-y-10 px-max-width"
-              hx-ext="response-targets"
-            >
-              <NewTodoForm />
+              <TodoListRows
+                todos={todos}
+                page={query.page}
+                todosPerPage={todosPerPage}
+              />
 
-              <TodoList>
-                {!todos.length && <TodoListEmptyMsg />}
-
-                <TodoListRows
-                  todos={todos}
-                  page={query.page}
-                  todosPerPage={todosPerPage}
-                />
-
-                {[...Array(10)].map(() => (
-                  <TodoSkeleton />
-                ))}
-              </TodoList>
-            </main>
-          </Layout.Body>
-        </Layout.Html>
+              {[...Array(10)].map(() => (
+                <TodoSkeleton />
+              ))}
+            </TodoList>
+          </main>
+        </Layout>
       );
     },
     {

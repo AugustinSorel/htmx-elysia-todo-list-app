@@ -1,8 +1,6 @@
 import Elysia, { t } from "elysia";
 import { ctx } from "../context/context";
 import { Layout } from "../components/layout";
-import { Head } from "../components/head";
-import { Header } from "../components/header";
 import { lucia } from "../lib/auth";
 import {
   SignInSchema,
@@ -25,24 +23,12 @@ export const authRouter = new Elysia()
     }
 
     return (
-      <Layout.Html>
-        <Head.Item>
-          <Head.Title>Sign up</Head.Title>
-          <Head.Style />
-          <Head.Htmx />
-          <Head.HtmxResponseTarget />
-        </Head.Item>
-
-        <Layout.Body>
-          <Header />
-
-          <Main>
-            <SubTitle>sign up</SubTitle>
-
-            <SignUpForm />
-          </Main>
-        </Layout.Body>
-      </Layout.Html>
+      <Layout title="Sign up">
+        <Main>
+          <SubTitle>sign up</SubTitle>
+          <SignUpForm />
+        </Main>
+      </Layout>
     );
   })
   .get("/sign-in", ({ user, redirect }) => {
@@ -51,24 +37,12 @@ export const authRouter = new Elysia()
     }
 
     return (
-      <Layout.Html>
-        <Head.Item>
-          <Head.Title>Sign in</Head.Title>
-          <Head.Style />
-          <Head.Htmx />
-          <Head.HtmxResponseTarget />
-        </Head.Item>
-
-        <Layout.Body>
-          <Header />
-
-          <Main>
-            <SubTitle>sign in</SubTitle>
-
-            <SignInForm />
-          </Main>
-        </Layout.Body>
-      </Layout.Html>
+      <Layout title="Sign in">
+        <Main>
+          <SubTitle>sign in</SubTitle>
+          <SignInForm />
+        </Main>
+      </Layout>
     );
   })
   .post(
