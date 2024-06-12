@@ -79,7 +79,9 @@ export const todosRouter = new Elysia({ prefix: "/todos" })
     "/",
     async ({ body, set, db, user }) => {
       if (!user) {
-        throw new Error("Not autherized");
+        set.status = "Unauthorized";
+        set.headers["HX-Redirect"] = "/sign-up";
+        throw new Error("Unauthorized");
       }
 
       const todos = await db
@@ -131,7 +133,13 @@ export const todosRouter = new Elysia({ prefix: "/todos" })
   )
   .patch(
     "/:id/toggle",
-    async ({ params, db }) => {
+    async ({ params, db, user, set }) => {
+      if (!user) {
+        set.status = "Unauthorized";
+        set.headers["HX-Redirect"] = "/sign-up";
+        throw new Error("Unauthorized");
+      }
+
       await db
         .update(todoTable)
         .set({ done: not(todoTable.done), updatedAt: new Date() })
@@ -145,9 +153,11 @@ export const todosRouter = new Elysia({ prefix: "/todos" })
   )
   .delete(
     "/:id",
-    async ({ params, db, user }) => {
+    async ({ params, db, user, set }) => {
       if (!user) {
-        throw new Error("not authorized");
+        set.status = "Unauthorized";
+        set.headers["HX-Redirect"] = "/sign-up";
+        throw new Error("Unauthorized");
       }
 
       const todos = await db.transaction(async (tx) => {
