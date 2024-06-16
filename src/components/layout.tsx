@@ -1,4 +1,3 @@
-import { Button } from "./ui/button";
 import { Toasts } from "./ui/toast";
 
 type Props = Html.PropsWithChildren & { title: string; user?: any };

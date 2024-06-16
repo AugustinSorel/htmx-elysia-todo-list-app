@@ -9,7 +9,7 @@ RUN bun install --production
 
 COPY src src
 COPY tsconfig.json .
-COPY tailwind.config.js .
+COPY tailwind.config.ts .
 COPY drizzle.config.ts .
 COPY drizzle drizzle
 
