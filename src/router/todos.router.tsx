@@ -13,9 +13,19 @@ import { todoTable } from "../db/schema";
 import { desc, eq, not } from "drizzle-orm";
 import { TodoSchema, todoSchema } from "../schemas/todo.schemas";
 import { ZodError } from "zod";
+import { createHtmxToast } from "../components/ui/toast";
 
 export const todosRouter = new Elysia({ prefix: "/todos" })
   .use(ctx)
+  .onError(({ set, error }) => {
+    set.headers["HX-Trigger"] = createHtmxToast({
+      title: "something went wrong",
+      description: error.message,
+      type: "error",
+    });
+
+    return console.log("onError");
+  })
   .get(
     "/",
     async ({ user, redirect, db, query }) => {
@@ -120,6 +130,11 @@ export const todosRouter = new Elysia({ prefix: "/todos" })
           set.headers["Content-Type"] = "text/html";
           set.headers["HX-Reswap"] = "outerHTML";
           set.status = "Unprocessable Content";
+          set.headers["HX-Trigger"] = createHtmxToast({
+            title: "something went wrong",
+            description: errors.title?._errors.at(0) ?? "invalid title",
+            type: "error",
+          });
 
           return (
             <NewTodoForm

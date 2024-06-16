@@ -1,3 +1,6 @@
+import { Button } from "./ui/button";
+import { Toasts } from "./ui/toast";
+
 type Props = Html.PropsWithChildren & { title: string; user?: any };
 
 export const Layout = (props: Props) => {
@@ -13,6 +16,7 @@ export const Layout = (props: Props) => {
             crossorigin="anonymous"
           ></script>
           <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/response-targets.js"></script>
+          <script src="//unpkg.com/alpinejs" defer></script>
         </head>
 
         <body>
@@ -27,6 +31,8 @@ export const Layout = (props: Props) => {
           </header>
 
           {props.children}
+
+          <Toasts />
         </body>
       </body>
     </html>
